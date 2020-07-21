@@ -3,7 +3,7 @@
     <el-card>
       <div slot="header">查询条件</div>
       <el-form class="search-form" inline :model="searchForm">
-        <el-form-item label="菜单名称">
+        <el-form-item label="账号">
           <el-input v-model="searchForm.name" clearable />
         </el-form-item>
         <el-form-item>

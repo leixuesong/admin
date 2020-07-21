@@ -11,11 +11,9 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
-            <el-dropdown-item @click.native="infoDialogVisible = true">
-              修改密码
-            </el-dropdown-item>
-          </router-link>
+          <el-dropdown-item @click.native="infoDialogVisible = true">
+            修改密码
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             退出
           </el-dropdown-item>
@@ -24,7 +22,6 @@
     </div>
     <!--修改密码-->
     <el-dialog
-      append-to-body
       title="修改密码"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -62,7 +59,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'name'
+      'name',
     ])
   },
   data(){

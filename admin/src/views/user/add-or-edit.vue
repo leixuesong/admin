@@ -8,10 +8,16 @@
     element-loading-text="加载中"
   >
     <el-form-item label="账号" prop="admin_account">
-      <el-input v-model="formData.admin_account" clearable />
+      <el-input v-model="formData.admin_account" readonly />
     </el-form-item>
-    <el-form-item label="密码" prop="admin_password" show-password>
-      <el-input v-model="formData.admin_password" clearable />
+    <el-form-item label="角色" prop="admin_role_id">
+      <el-select v-model="formData.admin_role_id" placeholder="">
+        <el-option
+          v-for="item in roleList"
+          :key="item.role_id"
+          :label="item.name"
+          :value="item.role_id"
+        /></el-select>
     </el-form-item>
     <el-form-item label="手机号" prop="admin_phone">
       <el-input v-model="formData.admin_phone" clearable />
@@ -22,8 +28,8 @@
     <el-form-item label="备注" prop="admin_remarks">
       <el-input v-model="formData.admin_remarks" clearable />
     </el-form-item>
-    <el-form-item label="状态" prop="status">
-      <el-select v-model="formData.status" placeholder="">
+    <el-form-item label="状态" prop="admin_status">
+      <el-select v-model="formData.admin_status" placeholder="">
         <el-option label="正常" :value="0" />
         <el-option label="停用" :value="1" />
       </el-select>
@@ -53,9 +59,9 @@ export default {
       },
       rules: {},
       formData: {
-        status: 0
+        admin_status: 0
       },
-      userlist: []
+      roleList:[]
     }
   },
   created() {
@@ -77,9 +83,12 @@ export default {
   },
   methods: {
     async init() {
-      this.userlist = await this.$request({
-        url: '/user/all'
-      })
+      this.roleList = await this.$request({
+          url: '/role/all',
+          data: {
+            id: this.id
+          }
+        })
       if (this.id !== -1) {
         this.formData = await this.$request({
           url: '/user/info',

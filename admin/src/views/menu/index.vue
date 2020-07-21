@@ -13,10 +13,13 @@
     </el-card>
     <div class="padding-y-16">
       <el-button type="primary" @click="add">添加</el-button>
-      <el-button type="danger" @click="del">删除</el-button>
     </div>
     <el-table border :data="list.data">
-      <el-table-column prop="name" label="名称" />
+      <el-table-column prop="name" label="名称" >
+        <template slot-scope="scope">
+          <span><i :class="scope.row.icon"></i> {{scope.row.name}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="controller" label="控制器" />
       <el-table-column prop="method" label="方法" />
       <el-table-column label="状态">

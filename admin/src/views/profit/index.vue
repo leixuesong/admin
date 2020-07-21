@@ -3,7 +3,7 @@
     <el-card>
       <div slot="header">查询条件</div>
       <el-form class="search-form" inline :model="searchForm">
-        <el-form-item label="菜单名称">
+        <el-form-item label="订单号">
           <el-input v-model="searchForm.name" clearable />
         </el-form-item>
         <el-form-item>
@@ -12,11 +12,11 @@
       </el-form>
     </el-card>
     <el-table class="margin-top-16" border :data="list.data">
-      <el-table-column prop="admin_account" label="用户名称" />
-      <el-table-column prop="sys_log_ip" label="IP" />
-      <el-table-column prop="sys_log_city" label="所在城市" />
-      <el-table-column prop="sys_log_note" label="备注" />
-      <el-table-column prop="sys_log_time" label="时间" />
+      <el-table-column prop="order_number" label="订单号" />
+      <el-table-column prop="order_amount" label="订单金额" />
+      <el-table-column prop="agent_name" label="所属代理商" />
+      <el-table-column prop="share_amount" label="分润金额" />
+      <el-table-column prop="share_time" label="时间" />
     </el-table>
     <div slot="footer">
       <el-pagination

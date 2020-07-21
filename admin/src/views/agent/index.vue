@@ -19,7 +19,13 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-table class="margin-top-16" border :data="list.data">
+    <div class="padding-y-16">
+      <el-button @click="changeStatus(scope.row.mer_id,0)">开启</el-button>
+      <el-button @click="changeStatus(scope.row.mer_id,2)">停用</el-button>
+      <el-button @click="whiteList(scope.row.mer_id)">设置白名单</el-button>
+      <el-button @click="reset(scope.row.mer_id)">重置密码</el-button>
+    </div>
+    <el-table border :data="list.data">
       <el-table-column prop="mer_acc" label="账号" />
       <el-table-column prop="agent_level" label="代理商级别" />
       <el-table-column prop="agent_up_level" label="上级代理商" />
@@ -34,14 +40,6 @@
           <span v-if="scope.row.status===0">正常</span>
           <span v-if="scope.row.status===1">待审核</span>
           <span v-else>停用</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="90">
-        <template slot-scope="scope">
-          <el-button @click="changeStatus(scope.row.mer_id,0)">开启</el-button>
-          <el-button @click="changeStatus(scope.row.mer_id),2">停用</el-button>
-          <el-button @click="whiteList(scope.row.mer_id)">设置白名单</el-button>
-          <el-button @click="reset(scope.row.mer_id)">重置密码</el-button>
         </template>
       </el-table-column>
     </el-table>
