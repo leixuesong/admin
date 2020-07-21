@@ -26,8 +26,9 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
-    if (res.code !== 200) {
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+    if (res.code === 200) {
+      return res.data
+    } else {
       if (res.code === 500) {
         MessageBox.confirm('你的登录信息已经过期，请重新登陆！', '退出提示', {
           confirmButtonText: '重新登陆',
@@ -42,19 +43,17 @@ service.interceptors.response.use(
         Message({
           message: res.message || '请求错误',
           type: 'error',
-          duration: 5 * 1000
+          duration: 3000
         })
       }
       return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res.data
     }
   },
   error => {
     Message({
       message: error.message,
       type: 'error',
-      duration: 5 * 1000
+      duration: 3000
     })
     return Promise.reject(error)
   }

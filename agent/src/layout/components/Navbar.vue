@@ -7,7 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="user-container" trigger="click">
         <div class="user-wrapper">
-          <span>admin</span>
+          <span>{{name}}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -62,7 +62,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'user'
+      'name'
     ])
   },
   data(){
@@ -97,25 +97,20 @@ export default {
       this.$refs.pwdForm.validate(async (valid) => {
         if (valid) {
           let result = await this.$request({
-            url: `/user/modify`,
+            url: `/agent/modify`,
             method: 'post',
             tag: 'list',
             data: this.pwdForm
-          })
-          if (result) {
+          }).then(data=>{
             this.$message({
               showClose: true,
               message: '密码修改成功！',
               type: 'success'
             })
             this.handleClose()
-          } else {
-            this.$message({
-              showClose: true,
-              message: result.message,
-              type: 'error'
-            })
-          }
+          }).catch(error => {
+            
+          })
         } else {
           return false
         }

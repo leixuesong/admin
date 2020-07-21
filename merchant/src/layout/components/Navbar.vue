@@ -7,7 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="user-container" trigger="click">
         <div class="user-wrapper">
-          <span>admin</span>
+          <span>{{name}}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -62,10 +62,19 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'user'
+      'name'
     ])
   },
   data(){
+    var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      }
     return {
       infoDialogVisible: false,
       pwdForm: {
@@ -76,7 +85,7 @@ export default {
       rules: {
         oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
         newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        confirmUserPwd: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }]
+        confirmUserPwd: [{ required: true,  trigger: validatePass }]
       }
     }
   },
@@ -96,26 +105,22 @@ export default {
     async submitForm () {
       this.$refs.pwdForm.validate(async (valid) => {
         if (valid) {
+          if (valid) {
           let result = await this.$request({
-            url: `/user/modify`,
+            url: `/merchant/modify`,
             method: 'post',
             tag: 'list',
             data: this.pwdForm
-          })
-          if (result) {
+          }).then(data=>{
             this.$message({
               showClose: true,
               message: '密码修改成功！',
               type: 'success'
             })
             this.handleClose()
-          } else {
-            this.$message({
-              showClose: true,
-              message: result.message,
-              type: 'error'
-            })
-          }
+          }).catch(error => {
+            
+          })
         } else {
           return false
         }
