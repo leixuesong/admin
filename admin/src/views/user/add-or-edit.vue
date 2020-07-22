@@ -8,10 +8,13 @@
     element-loading-text="加载中"
   >
     <el-form-item label="账号" prop="admin_account">
-      <el-input v-model="formData.admin_account" readonly />
+      <el-input v-model="formData.admin_account" :readonly='id !== -1' />
+    </el-form-item>
+    <el-form-item label="密码" prop="admin_password" v-show='id === -1'>
+      <el-input v-model="formData.admin_password" show-password />
     </el-form-item>
     <el-form-item label="角色" prop="admin_role_id">
-      <el-select v-model="formData.admin_role_id" placeholder="">
+      <el-select v-model="formData.admin_role_id" placeholder="选择角色">
         <el-option
           v-for="item in roleList"
           :key="item.role_id"
@@ -25,7 +28,7 @@
     <el-form-item label="邮箱" prop="admin_email">
       <el-input v-model="formData.admin_email" clearable />
     </el-form-item>
-    <el-form-item label="备注" prop="admin_remarks">
+    <el-form-item type="textarea" label="备注" prop="admin_remarks">
       <el-input v-model="formData.admin_remarks" clearable />
     </el-form-item>
     <el-form-item label="状态" prop="admin_status">

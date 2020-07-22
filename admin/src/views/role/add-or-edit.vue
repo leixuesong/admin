@@ -7,27 +7,20 @@
     label-width="100px"
     element-loading-text="加载中"
   >
-    <el-form-item label="节点名称" prop="name">
+    <el-form-item label="角色名称" prop="name">
       <el-input v-model="formData.name" clearable />
     </el-form-item>
-    <el-form-item label="上级节点" prop="pid">
-      <el-select v-model="formData.pid" placeholder="">
-        <el-option label="无" :value="0" />
+    <el-form-item label="备注" prop="remarks">
+      <el-input type='textarea' v-model="formData.remarks" clearable />
+    </el-form-item>
+    <el-form-item label="节点" prop="node_list">
+      <el-select v-model="formData.node_list" multiple clearable placeholder="选择节点">
         <el-option
-          v-for="item in rolelist"
+          v-for="item in menuList"
           :key="item.node_id"
           :label="item.name"
           :value="item.node_id"
         /></el-select>
-    </el-form-item>
-    <el-form-item label="路由控制器" prop="controller">
-      <el-input v-model="formData.controller" clearable />
-    </el-form-item>
-    <el-form-item label="路由方法" prop="method">
-      <el-input v-model="formData.method" clearable />
-    </el-form-item>
-    <el-form-item label="图标" prop="icon">
-      <el-input v-model="formData.icon" clearable />
     </el-form-item>
     <el-form-item label="状态" prop="status">
       <el-select v-model="formData.status" placeholder="">
@@ -60,9 +53,10 @@ export default {
       },
       rules: {},
       formData: {
+        node_list:[],
         status: 0
       },
-      rolelist: []
+      menuList: []
     }
   },
   created() {
@@ -84,16 +78,16 @@ export default {
   },
   methods: {
     async init() {
-      this.rolelist = await this.$request({
-        url: '/role/all'
+      this.menuList = await this.$request({
+        url: '/menu/all'
       })
       if (this.id !== -1) {
-        this.formData = await this.$request({
+          this.formData = await this.$request({
           url: '/role/info',
           data: {
             id: this.id
           }
-        })
+      }) 
       }
     },
     close() {

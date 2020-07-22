@@ -24,9 +24,9 @@
       <el-table-column prop="admin_update_time" label="更新时间" />
       <el-table-column label="状态" width="60">
         <template slot-scope="scope">
-          <span v-if="scope.row.status===0">正常</span>
-          <span v-if="scope.row.status===1">待审核</span>
-          <span v-else>停用</span>
+          <span v-if="scope.row.admin_status===0">正常</span>
+          <span v-else-if="scope.row.admin_status===1">待审核</span>
+          <span v-else >停用</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
