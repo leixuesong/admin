@@ -34,12 +34,12 @@
           <span v-else>停用</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="90">
+      <el-table-column label="操作" width="280" fixed="right" align='center'>
         <template slot-scope="scope">
-          <el-button @click="changeStatus(scope.row.mer_id,0)">开启</el-button>
-          <el-button @click="changeStatus(scope.row.mer_id),2">停用</el-button>
-          <el-button @click="whiteList(scope.row.mer_id)">设置白名单</el-button>
-          <el-button @click="reset(scope.row.mer_id)">重置密码</el-button>
+          <el-button @click="changeStatus(scope.row.mer_id,0)" v-if="scope.row.status === 2">开启</el-button>
+          <el-button @click="changeStatus(scope.row.mer_id,2)" v-if="scope.row.status === 0">停用</el-button>
+          <el-button @click="reset(scope.row.mer_id)" v-if="scope.row.status === 0">重置密码</el-button>
+          <el-button @click="whiteList(scope.row.mer_id)" v-if="scope.row.status === 0">设置白名单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -54,7 +54,23 @@
         @size-change="getList"
       />
     </div>
-
+    <!-- 设置白名单 -->
+    <el-dialog
+      title="设置白名单"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :before-close="handleClose"
+      :visible.sync="infoDialogVisible">
+      <el-form ref="form" :rules="rules" :model="form"  label-width="130px" >
+        <el-form-item label="IP白名单" prop="permit_IP" >
+          <el-input type="textarea" clearable v-model="form.permit_IP" />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="handleClose">取消</el-button>
+          <el-button type="primary" @click="submitForm">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -62,6 +78,9 @@ export default {
   name: 'Merchant',
   data() {
     return {
+      infoDialogVisible: false,
+      form:{},
+      rules: {},
       loading: {
         list: false
       },
@@ -98,7 +117,7 @@ export default {
       this.list.total = result.total
     },
     changeStatus(mer_id, status) {
-      this.$confirm(`是否${status === 0 ? '停用' : '开启'} ?`, '提示', {
+      this.$confirm(`是否${status === 0 ? '开启' : '停用'} ?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -116,8 +135,44 @@ export default {
         })
         .catch(() => {})
     },
-    whiteList() {
-
+    async whiteList(mer_id){
+      this.infoDialogVisible =true
+      this.form = await this.$request({
+        url: '/merchant/info',
+        data: {
+          mer_id
+        }
+      })
+    },
+    handleClose (done) {
+      this.$refs.form.resetFields()
+      this.infoDialogVisible = false
+      typeof done === 'function' && done()
+    }, 
+    async submitForm () {
+      this.$refs.form.validate(async (valid) => {
+        if (valid) {
+          let result = await this.$request({
+            url: `/merchant/modify`,
+            method: 'post',
+            tag: 'list',
+            data: this.form
+          }).then(data=>{
+            this.$message({
+              showClose: true,
+              message: '白名单设置成功！',
+              type: 'success'
+            })
+            this.handleClose()
+          }).catch(error => {
+            
+          })
+            
+          
+        } else {
+          return false
+        }
+      })
     },
     reset(mer_id) {
       this.$confirm(`是否重置密码 ?`, '提示', {

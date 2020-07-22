@@ -3,8 +3,8 @@
     <el-card>
       <div slot="header">查询条件</div>
       <el-form class="search-form" inline :model="searchForm">
-        <el-form-item label="账号">
-          <el-input v-model="searchForm.mer_acc" clearable />
+        <el-form-item label="名称">
+          <el-input v-model="searchForm.comm_name" clearable />
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="searchForm.status" clearable placeholder="">
@@ -19,27 +19,34 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-table class="margin-top-16" border :data="list.data">
-      <el-table-column prop="mer_acc" label="账号" />
-      <el-table-column prop="agent_acc" label="所属代理商" />
-      <el-table-column prop="phone" label="手机号码" />
-      <el-table-column prop="email" label="邮箱" />
-      <el-table-column prop="login_count" label="登录次数" />
-      <el-table-column prop="create_time" label="创建时间" />
-      <el-table-column prop="update_time" label="更新时间" />
+    <div class="padding-y-16">
+      <el-button type="primary" @click="add">添加</el-button>
+    </div>
+    <el-table border :data="list.data">
+      <el-table-column prop="comm_name" label="名称" >
+        <template slot-scope="scope">
+          <span><i :class="scope.row.icon"></i> {{scope.row.comm_name}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="图片" >
+         <template slot-scope="scope">
+           <img :src="scope.row.comm_img" v-if="scope.row.comm_img" />
+         </template>
+      </el-table-column>
+      <el-table-column prop="comm_note" label="说明" />
+      <el-table-column prop="comm_amount" label="金额" />
       <el-table-column label="状态">
         <template slot-scope="scope">
           <span v-if="scope.row.status===0">正常</span>
-          <span v-if="scope.row.status===1">待审核</span>
-          <span v-else>停用</span>
+          <span v-else-if="scope.row.status===1">停用</span>
+          <span v-else>待审核</span>
         </template>
+      </el-table-column>
+      <el-table-column prop="create_time" label="创建时间" >
       </el-table-column>
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
-          <el-button @click="changeStatus(scope.row.mer_id,0)">开启</el-button>
-          <el-button @click="changeStatus(scope.row.mer_id),2">停用</el-button>
-          <el-button @click="whiteList(scope.row.mer_id)">设置白名单</el-button>
-          <el-button @click="reset(scope.row.mer_id)">重置密码</el-button>
+          <el-button @click="edit(scope.row.comm_id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -54,16 +61,40 @@
         @size-change="getList"
       />
     </div>
-
+    <el-dialog
+      :title="dialog.title"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :before-close="close"
+      :visible="dialog.visible"
+    >
+      <AddOrEdit
+        :id="dialog.id"
+        ref="dialogForm"
+        :visible.sync="dialog.visible"
+        :data="dialog.data"
+        @refreshList="getList"
+      />
+    </el-dialog>
   </div>
 </template>
 <script>
+import AddOrEdit from './add-or-edit'
 export default {
-  name: 'Merchant',
+  name: 'Product',
+  components: {
+    AddOrEdit
+  },
   data() {
     return {
       loading: {
         list: false
+      },
+      dialog: {
+        visible: false,
+        title: '',
+        id: 0,
+        data: {}
       },
       searchForm: {
         status: ''
@@ -87,7 +118,7 @@ export default {
 
     async getList() {
       const result = await this.$request({
-        url: '/merchant/index',
+        url: '/product/index',
         data: {
           ...this.searchForm,
           pageNo: this.list.pageNo,
@@ -97,8 +128,20 @@ export default {
       this.list.data = result.data
       this.list.total = result.total
     },
-    changeStatus(mer_id, status) {
-      this.$confirm(`是否${status === 0 ? '停用' : '开启'} ?`, '提示', {
+    add() {
+      this.dialog.visible = true
+      this.dialog.title = '添加'
+      this.dialog.id = -1
+      this.dialog.data = {}
+    },
+    edit(id) {
+      this.dialog.visible = true
+      this.dialog.title = '编辑'
+      this.dialog.id = id
+      this.dialog.data = {}
+    },
+    del(id) {
+      this.$confirm(`是否删除 ?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -106,36 +149,18 @@ export default {
         .then(async() => {
           this.loading.list = true
           await this.$request({
-            url: '/merchant/status',
+            url: '/product/delete',
             data: {
-              mer_id,
-              status
+              id
             }
           })
           this.getList()
         })
         .catch(() => {})
     },
-    whiteList() {
-
-    },
-    reset(mer_id) {
-      this.$confirm(`是否重置密码 ?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(async() => {
-          this.loading.list = true
-          await this.$request({
-            url: '/merchant/reset',
-            data: {
-              mer_id
-            }
-          })
-          this.getList()
-        })
-        .catch(() => {})
+    close() {
+      this.$refs.dialogForm.$refs.form.resetFields()
+      this.dialog.visible = false
     }
   }
 }

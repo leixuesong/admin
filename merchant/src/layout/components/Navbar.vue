@@ -1,13 +1,17 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
       <el-dropdown class="user-container" trigger="click">
         <div class="user-wrapper">
-          <span>{{name}}</span>
+          <span>{{ name }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -29,13 +33,19 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :before-close="handleClose"
-      :visible.sync="infoDialogVisible">
-      <el-form ref="pwdForm" :rules="rules" :model="pwdForm"  label-width="130px" >
-        <el-form-item label="原密码" prop="oldPassword" >
-          <el-input clearable v-model="pwdForm.oldPassword" show-password/>
+      :visible.sync="infoDialogVisible"
+    >
+      <el-form
+        ref="pwdForm"
+        :rules="rules"
+        :model="pwdForm"
+        label-width="130px"
+      >
+        <el-form-item label="原密码" prop="oldPassword">
+          <el-input clearable v-model="pwdForm.oldPassword" show-password />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input clearable v-model="pwdForm.newPassword" show-password/>
+          <el-input clearable v-model="pwdForm.newPassword" show-password />
         </el-form-item>
         <el-form-item label="确认新密码" prop="confirmUserPwd">
           <el-input clearable v-model="pwdForm.confirmUserPwd" show-password />
@@ -50,9 +60,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import { mapGetters } from "vuex";
+import Breadcrumb from "@/components/Breadcrumb";
+import Hamburger from "@/components/Hamburger";
 
 export default {
   components: {
@@ -60,74 +70,76 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'name'
-    ])
+    ...mapGetters(["sidebar", "name"])
   },
-  data(){
+  data() {
     var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
       }
+    };
     return {
       infoDialogVisible: false,
       pwdForm: {
-        oldPassword: '',
-        newPassword: '',
-        confirmUserPwd: ''
+        oldPassword: "",
+        newPassword: "",
+        confirmUserPwd: ""
       },
       rules: {
-        oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
-        newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        confirmUserPwd: [{ required: true,  trigger: validatePass }]
+        oldPassword: [
+          { required: true, message: "请输入原密码", trigger: "blur" }
+        ],
+        newPassword: [
+          { required: true, message: "请输入新密码", trigger: "blur" }
+        ],
+        confirmUserPwd: [{ required: true, trigger: validatePass }]
       }
-    }
+    };
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch("app/toggleSideBar");
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
-    handleClose (done) {
-      this.$refs.pwdForm.resetFields()
-      this.infoDialogVisible = false
-      typeof done === 'function' && done()
+    handleClose(done) {
+      this.$refs.pwdForm.resetFields();
+      this.infoDialogVisible = false;
+      typeof done === "function" && done();
     },
-    async submitForm () {
-      this.$refs.pwdForm.validate(async (valid) => {
+    async submitForm() {
+      this.$refs.pwdForm.validate(async valid => {
         if (valid) {
           if (valid) {
-          let result = await this.$request({
-            url: `/merchant/modify`,
-            method: 'post',
-            tag: 'list',
-            data: this.pwdForm
-          }).then(data=>{
-            this.$message({
-              showClose: true,
-              message: '密码修改成功！',
-              type: 'success'
+            let result = await this.$request({
+              url: `/merchant/modify`,
+              method: "post",
+              tag: "list",
+              data: this.pwdForm
             })
-            this.handleClose()
-          }).catch(error => {
-            
-          })
-        } else {
-          return false
+              .then(data => {
+                this.$message({
+                  showClose: true,
+                  message: "密码修改成功！",
+                  type: "success"
+                });
+                this.handleClose();
+              })
+              .catch(error => {});
+          } else {
+            return false;
+          }
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -136,18 +148,18 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -174,10 +186,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }

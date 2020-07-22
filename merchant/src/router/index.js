@@ -77,8 +77,7 @@ export const constantRoutes = [
         meta: { title: '订单管理', icon: 'el-icon-s-order' }
       }
     ]
-  }
-
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
