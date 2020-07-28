@@ -5,7 +5,7 @@
         <h1 class="sidebar-title">后台</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <h1 class="sidebar-title">系统后台</h1>
+        <h1 class="sidebar-title">商户后台</h1>
       </router-link>
     </transition>
   </div>

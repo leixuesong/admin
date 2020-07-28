@@ -13,10 +13,10 @@
     <el-form-item label="商品图片" prop="comm_img">
       <el-upload
         class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="../api/merchant/login/upload"
         :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
+        :on-success="handleSuccess"
+        :before-upload="beforeUpload"
       >
         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -61,7 +61,9 @@ export default {
       },
       rules: {},
       formData: {
-        pid:0,
+        comm_name:'',
+        comm_img:'',
+        comm_note:'',
         status: 0
       }
     }
@@ -84,20 +86,21 @@ export default {
     )
   },
   methods: {
-    handleAvatarSuccess(res, file) {
+    handleSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
+        this.formData.comm_img = res.data.path
       },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
+      beforeUpload(file) {
+        const isImage = file.type === 'image/jpeg' || file.type === 'image/png';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+        if (!isImage) {
+          this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
         }
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过 2MB!');
         }
-        return isJPG && isLt2M;
+        return isImage && isLt2M;
       },
     async init() {
       if (this.id !== -1) {
@@ -107,6 +110,7 @@ export default {
             id: this.id
           }
         })
+        this.imageUrl = this.$ImagePath + this.formData.comm_img
       }
     },
     close() {
@@ -138,6 +142,7 @@ export default {
               message: '保存成功！',
               type: 'success'
             })
+            this.formData.comm_img = ''
             this.$emit('refreshList')
             this.close()
           } else {

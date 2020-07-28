@@ -10,8 +10,8 @@
           <el-select v-model="searchForm.status" clearable placeholder="">
             <el-option label="全部" value="" />
             <el-option label="正常" :value="0" />
-            <el-option label="待审核" :value="1" />
-            <el-option label="停用" :value="2" />
+            <el-option label="停用" :value="1" />
+            <el-option label="待审核" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column label="图片" >
          <template slot-scope="scope">
-           <img :src="scope.row.comm_img" v-if="scope.row.comm_img" />
+           <img :src="$ImagePath + scope.row.comm_img" v-if="scope.row.comm_img" />
          </template>
       </el-table-column>
       <el-table-column prop="comm_note" label="说明" />

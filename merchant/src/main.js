@@ -13,7 +13,7 @@ import '@/icons' // icon
 import request from '@/utils/request.js'
 import './permission'
 Vue.prototype.$request = request
-
+Vue.prototype.$ImagePath = 'http://localhost/backend/public/uploads/'
 Vue.use(ElementUI, {
   size: 'mini'
 })
