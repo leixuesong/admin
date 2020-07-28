@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column label="图片" >
          <template slot-scope="scope">
-           <img :src="$ImagePath + scope.row.comm_img" v-if="scope.row.comm_img" />
+           <img :src="$ImagePath + scope.row.comm_img" width="64" height="64" v-if="scope.row.comm_img" />
          </template>
       </el-table-column>
       <el-table-column prop="comm_note" label="说明" />

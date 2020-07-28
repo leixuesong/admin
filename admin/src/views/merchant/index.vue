@@ -30,7 +30,7 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <span v-if="scope.row.status===0">正常</span>
-          <span v-if="scope.row.status===1">待审核</span>
+          <span v-else-if="scope.row.status===1">待审核</span>
           <span v-else>停用</span>
         </template>
       </el-table-column>
