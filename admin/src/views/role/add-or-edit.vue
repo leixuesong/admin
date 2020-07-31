@@ -18,6 +18,7 @@
         ref="tree"
         :data="menuList"
         show-checkbox
+        :check-strictly="true"
         default-expand-all
         node-key="node_id"
         highlight-current
@@ -104,7 +105,7 @@ export default {
     async submitForm() {
       let result = {}
       this.$refs.form.validate(async valid => {
-        const nodeList = this.$refs.tree.getCheckedNodes(true).map(item => item.node_id).join(',')
+        const nodeList = this.$refs.tree.getCheckedNodes().map(item => item.node_id).join(',')
         if (valid) {
           if (this.id !== -1) {
             result = await this.$request({
