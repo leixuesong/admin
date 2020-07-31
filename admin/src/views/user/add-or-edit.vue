@@ -8,9 +8,9 @@
     element-loading-text="加载中"
   >
     <el-form-item label="账号" prop="admin_account">
-      <el-input v-model="formData.admin_account" :readonly='id !== -1' />
+      <el-input v-model="formData.admin_account" :readonly="id !== -1" />
     </el-form-item>
-    <el-form-item label="密码" prop="admin_password" v-show='id === -1'>
+    <el-form-item v-show="id === -1" label="密码" prop="admin_password">
       <el-input v-model="formData.admin_password" show-password />
     </el-form-item>
     <el-form-item label="角色" prop="admin_role_id">
@@ -64,7 +64,7 @@ export default {
       formData: {
         admin_status: 0
       },
-      roleList:[]
+      roleList: []
     }
   },
   created() {
@@ -86,11 +86,11 @@ export default {
   methods: {
     async init() {
       this.roleList = await this.$request({
-          url: '/role/all',
-          data: {
-            id: this.id
-          }
-        })
+        url: '/role/all',
+        data: {
+          id: this.id
+        }
+      })
       if (this.id !== -1) {
         this.formData = await this.$request({
           url: '/user/info',

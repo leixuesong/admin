@@ -10,15 +10,14 @@
     <el-form-item label="节点名称" prop="name">
       <el-input v-model="formData.name" clearable />
     </el-form-item>
-    <el-form-item label="上级节点" prop="pid">
-      <el-select v-model="formData.pid" placeholder="">
-        <el-option label="无" :value="0" />
-        <el-option
-          v-for="item in menulist"
-          :key="item.node_id"
-          :label="item.name"
-          :value="item.node_id"
-        /></el-select>
+    <el-form-item label="上级节点" prop="pidList">
+      <el-cascader
+        ref="cascader"
+        v-model="formData.pidList"
+        :props="{ checkStrictly: true, label: 'name', value: 'node_id' }"
+        :options="menulist"
+        @change="handleChange"
+      ></el-cascader>
     </el-form-item>
     <el-form-item label="路由控制器" prop="controller">
       <el-input v-model="formData.controller" clearable />
@@ -60,87 +59,92 @@ export default {
       },
       rules: {},
       formData: {
-        pid:0,
+        pidList: [0],
         status: 0
       },
       menulist: []
-    }
+    };
   },
   created() {
     this.$watch(
       () => {
-        return [this.id, this.visible]
+        return [this.id, this.visible];
       },
       (newVal, oldVal) => {
-        const [id, visible] = newVal
+        const [id, visible] = newVal;
         if (visible && id) {
-          this.init()
+          this.init();
         }
       },
       {
         immediate: true
       }
-    )
+    );
   },
   methods: {
+    handleChange(){
+      this.formData.pid= this.formData.pidList[this.formData.pidList.length-1]
+    },
     async init() {
       this.menulist = await this.$request({
-        url: '/menu/all'
-      })
+        url: "/menu/all"
+      });
+      this.menulist.unshift({ node_id: 0, name: "无" });
       if (this.id !== -1) {
         this.formData = await this.$request({
-          url: '/menu/info',
+          url: "/menu/info",
           data: {
             id: this.id
           }
-        })
+        });
       }
     },
     close() {
       this.formData = this.$options.data().formData
       this.$refs.form.resetFields()
-      this.$emit('update:visible', false)
+      this.$refs.cascader.focusFirstNode()
+      this.$emit("update:visible", false);
     },
     async submitForm() {
-      let result = {}
+      let result = {};
       this.$refs.form.validate(async valid => {
         if (valid) {
           if (this.id !== -1) {
             result = await this.$request({
-              url: '/menu/edit',
+              url: "/menu/edit",
               data: {
                 ...this.formData
               }
-            })
+            });
           } else {
             result = await this.$request({
-              url: '/menu/add',
+              url: "/menu/add",
               data: {
                 ...this.formData
               }
-            })
+            });
           }
           if (result) {
             this.$message({
               showClose: true,
-              message: '保存成功！',
-              type: 'success'
-            })
-            this.$emit('refreshList')
-            this.close()
+              message: "保存成功！",
+              type: "success"
+            });
+            this.$emit("refreshList");
+            this.close();
           } else {
             this.$message({
               showClose: true,
               message: result.message,
-              type: 'success'
-            })
+              type: "success"
+            });
           }
         } else {
-          return false
+          return false;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 <style scoped></style>

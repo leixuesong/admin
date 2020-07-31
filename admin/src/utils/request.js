@@ -28,7 +28,7 @@ service.interceptors.response.use(
 
     if (res.code === 200) {
       return res.data
-    }else{
+    } else {
       if (res.code === 500) {
         MessageBox.confirm('你的登录信息已经过期，请重新登陆！', '退出提示', {
           confirmButtonText: '重新登陆',

@@ -7,7 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="user-container" trigger="click">
         <div class="user-wrapper">
-          <span>{{name}}</span>
+          <span>{{ name }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -26,16 +26,17 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :before-close="handleClose"
-      :visible.sync="infoDialogVisible">
-      <el-form ref="pwdForm" :rules="rules" :model="pwdForm"  label-width="130px" >
-        <el-form-item label="原密码" prop="oldPassword" >
-          <el-input clearable v-model="pwdForm.oldPassword" show-password/>
+      :visible.sync="infoDialogVisible"
+    >
+      <el-form ref="pwdForm" :rules="rules" :model="pwdForm" label-width="130px">
+        <el-form-item label="原密码" prop="oldPassword">
+          <el-input v-model="pwdForm.oldPassword" clearable show-password />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input clearable v-model="pwdForm.newPassword" show-password/>
+          <el-input v-model="pwdForm.newPassword" clearable show-password />
         </el-form-item>
         <el-form-item label="确认新密码" prop="confirmUserPwd">
-          <el-input clearable v-model="pwdForm.confirmUserPwd" show-password />
+          <el-input v-model="pwdForm.confirmUserPwd" clearable show-password />
         </el-form-item>
         <el-form-item>
           <el-button @click="handleClose">取消</el-button>
@@ -59,19 +60,19 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
+      'name'
     ])
   },
-  data(){
+  data() {
     var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.pwdForm.newPassword) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.pwdForm.newPassword) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
       }
+    }
     return {
       infoDialogVisible: false,
       pwdForm: {
@@ -82,7 +83,7 @@ export default {
       rules: {
         oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
         newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        confirmUserPwd: [{ required: true,  trigger: 'blur',validator:validatePass }]
+        confirmUserPwd: [{ required: true, trigger: 'blur', validator: validatePass }]
       }
     }
   },
@@ -94,31 +95,27 @@ export default {
       await this.$store.dispatch('user/logout')
       this.$router.push('/login')
     },
-    handleClose (done) {
+    handleClose(done) {
       this.$refs.pwdForm.resetFields()
       this.infoDialogVisible = false
       typeof done === 'function' && done()
     },
-    async submitForm () {
-      this.$refs.pwdForm.validate(async (valid) => {
+    async submitForm() {
+      this.$refs.pwdForm.validate(async(valid) => {
         if (valid) {
-          let result = await this.$request({
+          await this.$request({
             url: `/user/modify`,
             method: 'post',
             tag: 'list',
             data: this.pwdForm
-          }).then(data=>{
+          }).then(data => {
             this.$message({
               showClose: true,
               message: '密码修改成功！',
               type: 'success'
             })
             this.handleClose()
-          }).catch(error => {
-            
           })
-            
-          
         } else {
           return false
         }

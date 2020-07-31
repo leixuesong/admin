@@ -1,18 +1,17 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { constantRoutes,resetRouter } from '@/router'
+import { constantRoutes, resetRouter } from '@/router'
 import Layout from '@/layout'
 import request from '@/utils/request'
-export const loadView = (view) => { 
-
+export const loadView = (view) => {
   return (resolve) => require([`@/views/${view}`], resolve)
-
 }
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
     routes: [],
-    addRoutes: []
+    addRoutes: [],
+    buttons: {}
   }
 }
 
@@ -31,6 +30,9 @@ const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
+  },
+  SET_BUTTONS: (state, buttons) => {
+    state.buttons = buttons
   }
 }
 
@@ -63,43 +65,43 @@ const actions = {
         if (!data) {
           return reject('token已过期，请重新登录.')
         }
-        const { admin_account,menu } = data
+        const { admin_account, menu, buttons } = data
         commit('SET_NAME', admin_account)
         function createMenu(data, pid = 0) {
-          let menu = [],item={};
+          const menu = []; let item = {}
           for (let i = 0; i < data.length; i++) {
-            if (data[i].pid === 0 ){
+            if (data[i].level === 1) {
               item = {
                 path: '/' + data[i].controller,
-                component:  Layout,
+                component: Layout,
                 name: data[i].controller + '-' + data[i].method,
                 meta: {
                   title: data[i].name,
                   icon: data[i].icon
                 }
-              };
-            }else{
+              }
+            } else if (data[i].level === 2) {
               item = {
-                path: data[i].controller,
+                path: '/' + data[i].controller + '/' + data[i].method,
                 component: loadView(data[i].controller + '/' + data[i].method),
                 name: data[i].controller + '-' + data[i].method,
                 meta: {
                   title: data[i].name,
                   icon: data[i].icon
                 }
-              };
+              }
             }
             if (data[i].pid === pid) {
-              item.children = createMenu(data, data[i].node_id);
-              menu.push(item);
+              item.children = createMenu(data, data[i].node_id)
+              menu.push(item)
             }
           }
-          return menu;
+          return menu
         }
-        let meunu_router = createMenu(menu)
-        console.log(meunu_router)
+        const meunu_router = createMenu(menu)
         meunu_router.push({ path: '*', redirect: '/404', hidden: true })
         commit('SET_ROUTES', meunu_router)
+        commit('SET_BUTTONS', buttons)
         resolve(data)
       }).catch(error => {
         reject(error)

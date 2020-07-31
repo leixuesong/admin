@@ -53,11 +53,10 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
+  }
 
-  
   // 404 page must be placed at the end !!!
- 
+
 ]
 
 const createRouter = () => new Router({

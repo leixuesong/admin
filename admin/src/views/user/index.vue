@@ -26,7 +26,7 @@
         <template slot-scope="scope">
           <span v-if="scope.row.admin_status===0">正常</span>
           <span v-else-if="scope.row.admin_status===1">待审核</span>
-          <span v-else >停用</span>
+          <span v-else>停用</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">

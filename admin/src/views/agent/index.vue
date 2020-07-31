@@ -22,10 +22,10 @@
     <el-table border :data="list.data" class="margin-top-16">
       <el-table-column prop="agent_acc" label="账号" />
       <el-table-column prop="agent_level" label="级别" />
-      <el-table-column prop="agent_up_level" label="上级代理商" width="160"/>
+      <el-table-column prop="agent_up_level" label="上级代理商" width="160" />
       <el-table-column prop="phone" label="手机号" />
       <el-table-column prop="email" label="邮箱" />
-      <el-table-column prop="agent_number" label="代理商推广码" width="160"/>
+      <el-table-column prop="agent_number" label="代理商推广码" width="160" />
       <el-table-column prop="login_count" label="登录次数" />
       <el-table-column prop="create_time" label="创建时间" />
       <el-table-column prop="update_time" label="更新时间" />
@@ -36,12 +36,12 @@
           <span v-else>停用</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="280" fixed="right" align='center'>
+      <el-table-column label="操作" width="280" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button @click="changeStatus(scope.row.agent_id,0)" v-if="scope.row.status === 2">开启</el-button>
-          <el-button @click="changeStatus(scope.row.agent_id,2)" v-if="scope.row.status === 0">停用</el-button>
-          <el-button @click="reset(scope.row.agent_id)" v-if="scope.row.status === 0">重置密码</el-button>
-          <el-button @click="whiteList(scope.row.agent_id)" v-if="scope.row.status === 0">设置白名单</el-button>
+          <el-button v-if="scope.row.status === 2" @click="changeStatus(scope.row.agent_id,0)">开启</el-button>
+          <el-button v-if="scope.row.status === 0" @click="changeStatus(scope.row.agent_id,2)">停用</el-button>
+          <el-button v-if="scope.row.status === 0" @click="reset(scope.row.agent_id)">重置密码</el-button>
+          <el-button v-if="scope.row.status === 0" @click="whiteList(scope.row.agent_id)">设置白名单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,10 +62,11 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :before-close="handleClose"
-      :visible.sync="infoDialogVisible">
-      <el-form ref="form" :rules="rules" :model="form"  label-width="130px" >
-        <el-form-item label="IP白名单" prop="permit_IP" >
-          <el-input type="textarea" clearable v-model="form.permit_IP" />
+      :visible.sync="infoDialogVisible"
+    >
+      <el-form ref="form" :rules="rules" :model="form" label-width="130px">
+        <el-form-item label="IP白名单" prop="permit_IP">
+          <el-input v-model="form.permit_IP" type="textarea" clearable />
         </el-form-item>
         <el-form-item>
           <el-button @click="handleClose">取消</el-button>
@@ -81,7 +82,7 @@ export default {
   data() {
     return {
       infoDialogVisible: false,
-      form:{},
+      form: {},
       rules: {},
       loading: {
         list: false
@@ -134,10 +135,9 @@ export default {
           })
           this.getList()
         })
-        .catch(() => {})
     },
-    async whiteList(agent_id){
-      this.infoDialogVisible =true
+    async whiteList(agent_id) {
+      this.infoDialogVisible = true
       this.form = await this.$request({
         url: '/agent/info',
         data: {
@@ -145,31 +145,27 @@ export default {
         }
       })
     },
-    handleClose (done) {
+    handleClose(done) {
       this.$refs.form.resetFields()
       this.infoDialogVisible = false
       typeof done === 'function' && done()
     },
-    async submitForm () {
-      this.$refs.form.validate(async (valid) => {
+    async submitForm() {
+      this.$refs.form.validate(async(valid) => {
         if (valid) {
-          let result = await this.$request({
+          await this.$request({
             url: `/agent/modify`,
             method: 'post',
             tag: 'list',
             data: this.form
-          }).then(data=>{
+          }).then(data => {
             this.$message({
               showClose: true,
               message: '白名单设置成功！',
               type: 'success'
             })
             this.handleClose()
-          }).catch(error => {
-            
           })
-            
-          
         } else {
           return false
         }
@@ -191,7 +187,6 @@ export default {
           })
           this.getList()
         })
-        .catch(() => {})
     }
   }
 }

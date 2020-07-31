@@ -12,14 +12,17 @@
       </el-form>
     </el-card>
     <div class="padding-y-16">
-      <el-button type="primary" @click="add">添加</el-button>
+      <el-button v-if="$store.getters.buttons.hasOwnProperty($route.name) && this.$store.getters.buttons[$route.name].includes('add')" type="primary" @click="add">添加</el-button>
     </div>
-    <el-table border :data="list.data" 
-     row-key="node_id"
-     :tree-props="{ hasChildren: 'hasChildren', children: 'children' }">
-      <el-table-column prop="name" label="名称" >
+    <el-table
+      border
+      :data="list.data"
+      row-key="node_id"
+      :tree-props="{ hasChildren: 'hasChildren', children: 'children' }"
+    >
+      <el-table-column prop="name" label="名称">
         <template slot-scope="scope">
-          <span><i :class="scope.row.icon"></i> {{scope.row.name}}</span>
+          <span><i :class="scope.row.icon" /> {{ scope.row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="controller" label="控制器" />
@@ -31,7 +34,7 @@
       </el-table-column>
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
-          <el-button @click="edit(scope.row.node_id)">编辑</el-button>
+          <el-button v-if="$store.getters.buttons.hasOwnProperty($route.name) && $store.getters.buttons[$route.name].includes('edit')" @click="edit(scope.row.node_id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>

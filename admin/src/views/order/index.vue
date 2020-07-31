@@ -26,7 +26,7 @@
       <el-table-column prop="mer_name" label="所属商户" />
       <el-table-column prop="comm_name" label="商品名称" />
       <el-table-column prop="order_amount" label="订单金额" />
-      <el-table-column label="状态" >
+      <el-table-column label="状态">
         <template slot-scope="scope">
           <span v-if="scope.row.order_state===0">已支付</span>
           <span v-if="scope.row.order_state===1">待审核</span>
@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       searchForm: {
-        status:''
+        status: ''
       },
       list: {
         data: [],
