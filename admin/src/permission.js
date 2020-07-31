@@ -24,24 +24,18 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          let data = await store.dispatch('user/getInfo')
+          await store.dispatch('user/getInfo')
           const accessRoutes = await store.getters.add_routes
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
-          // remove token and go to login page to re-login
-          // await store.dispatch('user/resetToken')
-          // Message.error(error || 'Has Error')
-          // next(`/login?redirect=${to.path}`)
         }
       }
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
       next()
     } else {
-      // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
     }
   }

@@ -10,7 +10,7 @@
     <el-form-item label="节点名称" prop="name">
       <el-input v-model="formData.name" clearable />
     </el-form-item>
-    <!-- <el-form-item label="上级节点" prop="pid">
+    <el-form-item label="上级节点" prop="pid">
       <el-select v-model="formData.pid" placeholder="">
         <el-option label="无" :value="0" />
         <el-option
@@ -19,7 +19,7 @@
           :label="item.name"
           :value="item.node_id"
         /></el-select>
-    </el-form-item> -->
+    </el-form-item>
     <el-form-item label="路由控制器" prop="controller">
       <el-input v-model="formData.controller" clearable />
     </el-form-item>
@@ -73,7 +73,6 @@ export default {
       },
       (newVal, oldVal) => {
         const [id, visible] = newVal
-        !visible && this.$refs['form'].resetFields()
         if (visible && id) {
           this.init()
         }
@@ -98,6 +97,7 @@ export default {
       }
     },
     close() {
+      this.formData = this.$options.data().formData
       this.$refs.form.resetFields()
       this.$emit('update:visible', false)
     },

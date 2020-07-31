@@ -115,6 +115,8 @@ export default {
     },
     close() {
       this.$refs.form.resetFields()
+      this.formData=this.$options.data().formData
+      this.formData.comm_img = ''
       this.$emit('update:visible', false)
     },
     async submitForm() {
@@ -142,7 +144,6 @@ export default {
               message: '保存成功！',
               type: 'success'
             })
-            this.formData.comm_img = ''
             this.$emit('refreshList')
             this.close()
           } else {

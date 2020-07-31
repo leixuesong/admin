@@ -74,7 +74,6 @@ export default {
       },
       (newVal, oldVal) => {
         const [id, visible] = newVal
-        !visible && this.$refs['form'].resetFields()
         if (visible && id) {
           this.init()
         }
@@ -103,6 +102,7 @@ export default {
     },
     close() {
       this.$refs.form.resetFields()
+      this.$refs.formData = this.$options.data().formData
       this.$emit('update:visible', false)
     },
     async submitForm() {

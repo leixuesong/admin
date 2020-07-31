@@ -143,8 +143,7 @@ export default {
         .catch(() => {})
     },
     close() {
-      this.$refs.dialogForm.$refs.form.resetFields()
-      this.dialog.visible = false
+      this.$refs.dialogForm.close()
     }
   }
 }

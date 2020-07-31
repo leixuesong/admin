@@ -145,8 +145,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      })
-        .then(async() => {
+      }).then(async() => {
           this.loading.list = true
           await this.$request({
             url: '/product/delete',
@@ -159,8 +158,7 @@ export default {
         .catch(() => {})
     },
     close() {
-      this.$refs.dialogForm.$refs.form.resetFields()
-      this.dialog.visible = false
+      this.$refs.dialogForm.close()
     }
   }
 }

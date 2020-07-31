@@ -14,7 +14,9 @@
     <div class="padding-y-16">
       <el-button type="primary" @click="add">添加</el-button>
     </div>
-    <el-table border :data="list.data">
+    <el-table border :data="list.data" 
+     row-key="node_id"
+     :tree-props="{ hasChildren: 'hasChildren', children: 'children' }">
       <el-table-column prop="name" label="名称" >
         <template slot-scope="scope">
           <span><i :class="scope.row.icon"></i> {{scope.row.name}}</span>
@@ -33,17 +35,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <div slot="footer">
-      <el-pagination
-        background
-        layout="->, total, prev, pager, next, sizes, jumper"
-        :current-page.sync="list.pageNo"
-        :page-size.sync="list.pageSize"
-        :total="list.total"
-        @current-change="getList"
-        @size-change="getList"
-      />
-    </div>
     <el-dialog
       :title="dialog.title"
       :close-on-click-modal="false"
@@ -81,10 +72,7 @@ export default {
       },
       searchForm: {},
       list: {
-        data: [],
-        pageNo: 1,
-        pageSize: 10,
-        total: 0
+        data: []
       }
     }
   },
@@ -101,13 +89,10 @@ export default {
       const result = await this.$request({
         url: '/menu/index',
         data: {
-          ...this.searchForm,
-          pageNo: this.list.pageNo,
-          pageSize: this.list.pageSize
+          ...this.searchForm
         }
       })
       this.list.data = result.data
-      this.list.total = result.total
     },
     add() {
       this.dialog.visible = true
@@ -140,8 +125,7 @@ export default {
         .catch(() => {})
     },
     close() {
-      this.$refs.dialogForm.$refs.form.resetFields()
-      this.dialog.visible = false
+      this.$refs.dialogForm.close()
     }
   }
 }

@@ -65,11 +65,39 @@ const actions = {
         }
         const { admin_account,menu } = data
         commit('SET_NAME', admin_account)
-        let meunu_router = menu.map((item) => {
-          item.component = Layout;
-          item.children[0].component = loadView(item.children[0].view)
-          return item
-        })
+        function createMenu(data, pid = 0) {
+          let menu = [],item={};
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].pid === 0 ){
+              item = {
+                path: '/' + data[i].controller,
+                component:  Layout,
+                name: data[i].controller + '-' + data[i].method,
+                meta: {
+                  title: data[i].name,
+                  icon: data[i].icon
+                }
+              };
+            }else{
+              item = {
+                path: data[i].controller,
+                component: loadView(data[i].controller + '/' + data[i].method),
+                name: data[i].controller + '-' + data[i].method,
+                meta: {
+                  title: data[i].name,
+                  icon: data[i].icon
+                }
+              };
+            }
+            if (data[i].pid === pid) {
+              item.children = createMenu(data, data[i].node_id);
+              menu.push(item);
+            }
+          }
+          return menu;
+        }
+        let meunu_router = createMenu(menu)
+        console.log(meunu_router)
         meunu_router.push({ path: '*', redirect: '/404', hidden: true })
         commit('SET_ROUTES', meunu_router)
         resolve(data)
