@@ -12,7 +12,7 @@ module.exports = {
   publicPath: '/admin/',
   outputDir: 'admin',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: false,
   productionSourceMap: false,
   devServer: {
     port: port,

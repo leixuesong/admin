@@ -82,8 +82,10 @@ export default {
     );
   },
   methods: {
-    handleChange(){
-      this.formData.pid= this.formData.pidList[this.formData.pidList.length-1]
+    handleChange() {
+      this.formData.pid = this.formData.pidList[
+        this.formData.pidList.length - 1
+      ];
     },
     async init() {
       this.menulist = await this.$request({
@@ -100,9 +102,10 @@ export default {
       }
     },
     close() {
-      this.formData = this.$options.data().formData
-      this.$refs.form.resetFields()
-      this.$refs.cascader.focusFirstNode()
+      this.formData = this.$options.data().formData;
+      this.$refs.form.resetFields();
+      this.$refs.cascader.$refs.panel.activePath = [];
+      this.$refs.cascader.$refs.panel.calculateCheckedNodePaths();
       this.$emit("update:visible", false);
     },
     async submitForm() {

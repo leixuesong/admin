@@ -98,6 +98,7 @@ const actions = {
           }
           return menu
         }
+        console.log(menu)
         const meunu_router = createMenu(menu)
         meunu_router.push({ path: '*', redirect: '/404', hidden: true })
         commit('SET_ROUTES', meunu_router)

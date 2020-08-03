@@ -18,7 +18,6 @@
         ref="tree"
         :data="menuList"
         show-checkbox
-        :check-strictly="true"
         default-expand-all
         node-key="node_id"
         highlight-current

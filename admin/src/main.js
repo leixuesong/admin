@@ -11,9 +11,11 @@ import router from './router'
 
 import '@/icons' // icon
 import request from '@/utils/request.js'
+// 动态权限菜单
 import './permission'
+// 按钮指令directive
+import '@/directive/index.js'
 Vue.prototype.$request = request
-
 Vue.use(ElementUI, {
   size: 'mini'
 })

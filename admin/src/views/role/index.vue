@@ -12,7 +12,7 @@
       </el-form>
     </el-card>
     <div class="padding-y-16">
-      <el-button type="primary" @click="add">添加</el-button>
+      <el-button type="primary" v-has:add @click="add">添加</el-button>
     </div>
     <el-table border :data="list.data">
       <el-table-column prop="name" label="名称" />
@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
-          <el-button @click="edit(scope.row.role_id)">编辑</el-button>
+          <el-button v-has:edit @click="edit(scope.row.role_id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
